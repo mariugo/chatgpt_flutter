@@ -1,24 +1,26 @@
-import 'package:chatgpt_flutter/app/data/models/chat_model.dart';
+import 'package:chatgpt_flutter/app/data/models/models_model.dart';
 import 'package:chatgpt_flutter/app/data/repository/api_service_impl.dart';
 import 'package:flutter/material.dart';
 
-class ChatProvider with ChangeNotifier {
-  List<ChatModel> chatList = [];
-  List<ChatModel> get getChatList {
-    return chatList;
+class ModelsProvider with ChangeNotifier {
+  String currentModel = "text-davinci-003";
+  String get getCurrentModel {
+    return currentModel;
   }
 
-  void addUserMessage({required String msg}) {
-    chatList.add(ChatModel(msg: msg, chatIndex: 0));
+  void setCurrentModel(String newModel) {
+    currentModel = newModel;
     notifyListeners();
   }
 
-  Future<void> sendMessageAndGetAnswers(
-      {required String msg, required String chosenModelId}) async {
-    chatList.addAll(await ApiServiceImpl().sendMessage(
-      message: msg,
-      modelId: chosenModelId,
-    ));
-    notifyListeners();
+  List<ModelsModel> modelsList = [];
+
+  List<ModelsModel> get getModelsList {
+    return modelsList;
+  }
+
+  Future<List<ModelsModel>> getAllModels() async {
+    modelsList = await ApiServiceImpl().getModels();
+    return modelsList;
   }
 }
